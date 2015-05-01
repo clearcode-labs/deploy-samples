@@ -1,0 +1,619 @@
+{
+    "Code": "ex-030",
+    "Codeblocks": [
+        {
+            "Name": "getinstancestatus",
+            "Steps": [
+                {
+                    "Codeblock": "getinstancestatus",
+                    "Commented": false,
+                    "Description": "describe the instance",
+                    "FunctionDefinition": {
+                        "Filter.n": {
+                            "Item::Filter::0": {
+                                "Name": {
+                                    "Name": "",
+                                    "__input_type": "text"
+                                },
+                                "Value.m": {
+                                    "Item::Value::0": {
+                                        "Value": "",
+                                        "__input_type": "text"
+                                    },
+                                    "__is_array": "true"
+                                }
+                            },
+                            "__is_array": "true"
+                        },
+                        "InstanceId.n": {
+                            "Item::InstanceId::0": {
+                                "InstanceId": "[$instance$]",
+                                "__input_type": "text"
+                            },
+                            "__is_array": "true"
+                        },
+                        "__name": "aws_ec2_DescribeInstances",
+                        "aws_region": {
+                            "__class": "combo w300px",
+                            "__dataset": "ddDataSource_GetAWSClouds",
+                            "__datasource": "function",
+                            "__hr_after": "true",
+                            "__input_type": "dropdown",
+                            "__label": "AWS Region",
+                            "aws_region": "[$region$]"
+                        },
+                        "result_name": {
+                            "__break_before": "true",
+                            "__input_type": "text",
+                            "__label": "Result Variable",
+                            "result_name": "result"
+                        }
+                    },
+                    "FunctionName": "aws_ec2_DescribeInstances",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "getinstancestatus",
+                    "Commented": false,
+                    "Description": "extract the state and external dns from the xml",
+                    "FunctionDefinition": {
+                        "__name": "set_variable",
+                        "variables": {
+                            "__label": "Variables",
+                            "variable": {
+                                "__label": "Variable",
+                                "modifier": {
+                                    "__input_type": "select",
+                                    "__label": "Modifier",
+                                    "modifier": "DEFAULT"
+                                },
+                                "name": {
+                                    "__input_type": "text",
+                                    "__label": "Name",
+                                    "name": "dnsname"
+                                },
+                                "value": {
+                                    "__input_type": "text",
+                                    "__label": "Value",
+                                    "value": "[$result^//dnsName$]"
+                                }
+                            }
+                        }
+                    },
+                    "FunctionName": "set_variable",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "getinstancestatus",
+                    "Commented": false,
+                    "Description": "test to see if the instance is running, if not sleep",
+                    "FunctionDefinition": {
+                        "__name": "if",
+                        "else": {
+                            "__input_type": "text",
+                            "function": {
+                                "__name": "sleep",
+                                "__snip": "seconds",
+                                "seconds": {
+                                    "__input_type": "text",
+                                    "__label": "Sleep",
+                                    "seconds": "[$sleep_secs$]"
+                                }
+                            }
+                        },
+                        "tests": {
+                            "test": {
+                                "action": {
+                                    "function": {
+                                        "__name": "break_loop",
+                                        "function": ""
+                                    }
+                                },
+                                "eval": {
+                                    "eval": "\"[$state$]\" == \"running\""
+                                }
+                            }
+                        }
+                    },
+                    "FunctionName": "if",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                }
+            ]
+        },
+        {
+            "Name": "MAIN",
+            "Steps": [
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "Get the image id and instance type from the service data",
+                    "FunctionDefinition": {
+                        "__extension": "deploy.datastore",
+                        "__name": "get_deployment_value",
+                        "pairs": {
+                            "Item::pair::0": {
+                                "key": {
+                                    "key": "image"
+                                },
+                                "variable_name": {
+                                    "variable_name": "image"
+                                }
+                            },
+                            "Item::pair::1": {
+                                "key": {
+                                    "key": "type"
+                                },
+                                "variable_name": {
+                                    "variable_name": "type"
+                                }
+                            },
+                            "__is_array": "true"
+                        },
+                        "scope": {
+                            "scope": "Service"
+                        }
+                    },
+                    "FunctionName": "get_deployment_value",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "Get the region, security group and password from the deployment data",
+                    "FunctionDefinition": {
+                        "__extension": "deploy.datastore",
+                        "__name": "get_deployment_value",
+                        "pairs": {
+                            "Item::pair::0": {
+                                "key": {
+                                    "key": "region"
+                                },
+                                "variable_name": {
+                                    "variable_name": "region"
+                                }
+                            },
+                            "Item::pair::1": {
+                                "key": {
+                                    "key": "admpassword"
+                                },
+                                "variable_name": {
+                                    "variable_name": "admpassword"
+                                }
+                            },
+                            "Item::pair::2": {
+                                "key": {
+                                    "key": "securitygroup"
+                                },
+                                "variable_name": {
+                                    "variable_name": "sg"
+                                }
+                            },
+                            "__is_array": "true"
+                        },
+                        "scope": {
+                            "scope": "Deployment"
+                        }
+                    },
+                    "FunctionName": "get_deployment_value",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "Start a VM and enable WinRM, open firewall, set Admin password",
+                    "FunctionDefinition": {
+                        "AddressingType": {
+                            "AddressingType": ""
+                        },
+                        "BlockDeviceMapping.n": {
+                            "Item::BlockDeviceMapping::0": {
+                                "DeviceName": {
+                                    "DeviceName": ""
+                                },
+                                "Ebs": {
+                                    "DeleteOnTermination": {
+                                        "DeleteOnTermination": ""
+                                    },
+                                    "SnapshotId": {
+                                        "SnapshotId": ""
+                                    },
+                                    "VolumeSize": {
+                                        "VolumeSize": ""
+                                    }
+                                },
+                                "NoDevice": {
+                                    "NoDevice": ""
+                                },
+                                "VirtualName": {
+                                    "VirtualName": ""
+                                }
+                            },
+                            "__is_array": "true"
+                        },
+                        "ClientToken": {
+                            "ClientToken": ""
+                        },
+                        "DisableApiTermination": {
+                            "DisableApiTermination": ""
+                        },
+                        "ImageId": {
+                            "ImageId": "[$image$]"
+                        },
+                        "InstanceInitiatedShutdownBehavior": {
+                            "InstanceInitiatedShutdownBehavior": ""
+                        },
+                        "InstanceType": {
+                            "InstanceType": "[$type$]"
+                        },
+                        "KernelId": {
+                            "KernelId": ""
+                        },
+                        "KeyName": {
+                            "KeyName": ""
+                        },
+                        "MaxCount": {
+                            "MaxCount": "1"
+                        },
+                        "MinCount": {
+                            "MinCount": "1"
+                        },
+                        "Monitoring.Enabled": {
+                            "Monitoring.Enabled": ""
+                        },
+                        "Placement": {
+                            "AvailabilityZone": {
+                                "AvailabilityZone": ""
+                            },
+                            "GroupName": {
+                                "GroupName": ""
+                            },
+                            "Tenancy": {
+                                "Tenancy": ""
+                            }
+                        },
+                        "PrivateIpAddress": {
+                            "PrivateIpAddress": ""
+                        },
+                        "RamdiskId": {
+                            "RamdiskId": ""
+                        },
+                        "SecurityGroup.n": {
+                            "Item::SecurityGroup::0": {
+                                "SecurityGroup": "[$sg$]"
+                            },
+                            "__is_array": "true"
+                        },
+                        "SecurityGroupId.n": {
+                            "Item::SecurityGroupId::0": {
+                                "SecurityGroupId": ""
+                            },
+                            "__is_array": "true"
+                        },
+                        "SubnetId": {
+                            "SubnetId": ""
+                        },
+                        "UserData": {
+                            "UserData": "<powershell>\n$admin = [adsi](\"WinNT://./administrator, user\")\n$admin.psbase.invoke(\"SetPassword\", \"[$admpassword$]\")\n</powershell>\n<script>\nwinrm quickconfig -q & winrm set winrm/config @{MaxTimeoutms=\"1800000\"} & winrm set winrm/config/service @{AllowUnencrypted=\"true\"} & winrm set winrm/config/service/auth @{Basic=\"true\"} & netsh advfirewall firewall add rule name=\"WinRM 5985\" protocol=TCP dir=in localport=5985 action=allow & netsh advfirewall firewall add rule name=\"IIS 80\" protocol=TCP dir=in localport=80 action=allow\n</script>"
+                        },
+                        "__name": "aws_ec2_RunInstances",
+                        "aws_region": {
+                            "aws_region": "[$region$]"
+                        },
+                        "result_name": {
+                            "result_name": "result"
+                        }
+                    },
+                    "FunctionName": "aws_ec2_RunInstances",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "extract the instance id from the result xml",
+                    "FunctionDefinition": {
+                        "__name": "set_variable",
+                        "variables": {
+                            "__label": "Variables",
+                            "variable": {
+                                "__label": "Variable",
+                                "modifier": {
+                                    "__input_type": "select",
+                                    "__label": "Modifier",
+                                    "modifier": "DEFAULT"
+                                },
+                                "name": {
+                                    "__input_type": "text",
+                                    "__label": "Name",
+                                    "name": "instance"
+                                },
+                                "value": {
+                                    "__input_type": "text",
+                                    "__label": "Value",
+                                    "value": "[$result^//instanceId$]"
+                                }
+                            }
+                        }
+                    },
+                    "FunctionName": "set_variable",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "",
+                    "FunctionDefinition": {
+                        "__extension": "deploy.deploy",
+                        "__name": "register_host_instance",
+                        "address": {
+                            "address": ""
+                        },
+                        "host_name": {
+                            "host_name": "[$instance$]"
+                        }
+                    },
+                    "FunctionName": "register_host_instance",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "Print the instance id",
+                    "FunctionDefinition": {
+                        "__name": "log_msg",
+                        "message": {
+                            "message": "Instance ID is [$instance$]"
+                        }
+                    },
+                    "FunctionName": "log_msg",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "call codeblock the waits until the instance is running",
+                    "FunctionDefinition": {
+                        "__name": "codeblock",
+                        "__snip": "codeblock",
+                        "codeblock": {
+                            "__input_type": "text",
+                            "codeblock": "wait_for_boot"
+                        }
+                    },
+                    "FunctionName": "codeblock",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "",
+                    "FunctionDefinition": {
+                        "__extension": "deploy.deploy",
+                        "__name": "register_host_instance",
+                        "address": {
+                            "address": "[$dnsname$]"
+                        },
+                        "host_name": {
+                            "host_name": "[$instance$]"
+                        }
+                    },
+                    "FunctionName": "update_host_address",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                }
+            ]
+        },
+        {
+            "Name": "wait_for_boot",
+            "Steps": [
+                {
+                    "Codeblock": "wait_for_boot",
+                    "Commented": false,
+                    "Description": "if we don't have an instance id, something is wrong",
+                    "FunctionDefinition": {
+                        "__name": "if",
+                        "tests": {
+                            "test": {
+                                "action": {
+                                    "function": {
+                                        "__name": "end",
+                                        "__snip": "status",
+                                        "message": {
+                                            "__class": "w95pct",
+                                            "__input_type": "textarea",
+                                            "__label": "Message",
+                                            "__label_style": "display: block;",
+                                            "__rows": "3",
+                                            "message": "Instance variable not populated. Erroring"
+                                        },
+                                        "status": {
+                                            "__dataset": "Completed|Error|Cancelled",
+                                            "__datasource": "local",
+                                            "__input_type": "dropdown",
+                                            "__label": "Status",
+                                            "status": "Error"
+                                        }
+                                    }
+                                },
+                                "eval": {
+                                    "eval": "\"[$instance$]\" == \"\""
+                                }
+                            }
+                        }
+                    },
+                    "FunctionName": "if",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "wait_for_boot",
+                    "Commented": false,
+                    "Description": "set the loop parameters",
+                    "FunctionDefinition": {
+                        "__name": "set_variable",
+                        "variables": {
+                            "__label": "Variables",
+                            "variable": {
+                                "__label": "Variable",
+                                "modifier": {
+                                    "__input_type": "select",
+                                    "__label": "Modifier",
+                                    "modifier": "DEFAULT"
+                                },
+                                "name": {
+                                    "__input_type": "text",
+                                    "__label": "Name",
+                                    "name": "sleep_secs"
+                                },
+                                "value": {
+                                    "__input_type": "text",
+                                    "__label": "Value",
+                                    "value": "10"
+                                }
+                            }
+                        }
+                    },
+                    "FunctionName": "set_variable",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "wait_for_boot",
+                    "Commented": false,
+                    "Description": "loop for a certain number of times testing the status",
+                    "FunctionDefinition": {
+                        "__name": "loop",
+                        "action": {
+                            "function": {
+                                "__name": "codeblock",
+                                "__snip": "codeblock",
+                                "codeblock": {
+                                    "__input_type": "text",
+                                    "codeblock": "getinstancestatus"
+                                }
+                            }
+                        },
+                        "compare_to": {
+                            "__input_type": "text",
+                            "compare_to": "[$num_tests$]"
+                        },
+                        "counter": {
+                            "__input_type": "text",
+                            "counter": "z"
+                        },
+                        "increment": {
+                            "__input_type": "text",
+                            "increment": "1"
+                        },
+                        "max": {
+                            "__input_type": "text",
+                            "max": ""
+                        },
+                        "start": {
+                            "__input_type": "text",
+                            "start": "1"
+                        },
+                        "test": {
+                            "__input_type": "select",
+                            "test": "<="
+                        }
+                    },
+                    "FunctionName": "loop",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "wait_for_boot",
+                    "Commented": false,
+                    "Description": "at this point, if the instance is not running there is something wrong",
+                    "FunctionDefinition": {
+                        "__name": "if",
+                        "else": {
+                            "__input_type": "text",
+                            "function": {
+                                "__name": "log_msg",
+                                "__snip": "message",
+                                "message": {
+                                    "__class": "w95pct",
+                                    "__input_type": "textarea",
+                                    "__label": "Log",
+                                    "__label_style": "display: block;",
+                                    "__required": "true",
+                                    "__rows": "2",
+                                    "message": "instance [$instance$] is running, state is [$state$], dnsname is [$dnsname$]"
+                                }
+                            }
+                        },
+                        "tests": {
+                            "test": {
+                                "action": {
+                                    "function": {
+                                        "__name": "end",
+                                        "__snip": "status",
+                                        "message": {
+                                            "__class": "w95pct",
+                                            "__input_type": "textarea",
+                                            "__label": "Message",
+                                            "__label_style": "display: block;",
+                                            "__rows": "3",
+                                            "message": "instance [$instance$] is not running, state is [$state$], dnsname is [$dnsname$]"
+                                        },
+                                        "status": {
+                                            "__dataset": "Completed|Error|Cancelled",
+                                            "__datasource": "local",
+                                            "__input_type": "dropdown",
+                                            "__label": "Status",
+                                            "status": "Error"
+                                        }
+                                    }
+                                },
+                                "eval": {
+                                    "eval": "\"[$state$]\" != \"running\""
+                                }
+                            }
+                        }
+                    },
+                    "FunctionName": "if",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                }
+            ]
+        }
+    ],
+    "ConcurrentInstances": null,
+    "Description": "Starts a Windows VM in EC2",
+    "IsDefaultVersion": true,
+    "MaxVersion": 1.0,
+    "Name": "Example EC2 Boot Windows",
+    "NextMajorVersion": "2.000",
+    "NextMinorVersion": "1.001",
+    "NumberOfApprovedVersions": 0,
+    "Parameters": [],
+    "QueueDepth": null,
+    "Status": "Development",
+    "Version": 1.0
+}

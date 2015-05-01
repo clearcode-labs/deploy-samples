@@ -1,0 +1,229 @@
+{
+    "Code": "ex-031",
+    "Codeblocks": [
+        {
+            "Name": "check_winrm_http",
+            "Steps": [
+                {
+                    "Codeblock": "check_winrm_http",
+                    "Commented": false,
+                    "Description": "Wait until WinRM comes up",
+                    "FunctionDefinition": {
+                        "__name": "http",
+                        "__parse_method": "2",
+                        "cookie_out": {
+                            "cookie_out": ""
+                        },
+                        "data": {
+                            "data": ""
+                        },
+                        "headers": {
+                            "Item::pair::0": {
+                                "key": {
+                                    "key": ""
+                                },
+                                "value": {
+                                    "value": ""
+                                }
+                            },
+                            "__is_array": "true"
+                        },
+                        "response_body": {
+                            "response_body": ""
+                        },
+                        "response_header": {
+                            "response_header": ""
+                        },
+                        "response_info": {
+                            "response_info": ""
+                        },
+                        "response_time_ms": {
+                            "response_time_ms": ""
+                        },
+                        "retries": {
+                            "retries": "20"
+                        },
+                        "status_code": {
+                            "status_code": "code"
+                        },
+                        "status_msg": {
+                            "status_msg": ""
+                        },
+                        "timeout": {
+                            "timeout": "30"
+                        },
+                        "type": {
+                            "type": "GET"
+                        },
+                        "url": {
+                            "url": "http://[$dnsname$]:5985/wsman"
+                        }
+                    },
+                    "FunctionName": "http",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 2,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "check_winrm_http",
+                    "Commented": false,
+                    "Description": "",
+                    "FunctionDefinition": {
+                        "__name": "if",
+                        "else": {
+                            "__input_type": "text",
+                            "function": {
+                                "__name": "sleep",
+                                "seconds": {
+                                    "seconds": "30"
+                                }
+                            }
+                        },
+                        "tests": {
+                            "test": {
+                                "action": {
+                                    "function": {
+                                        "__name": "break_loop",
+                                        "function": ""
+                                    }
+                                },
+                                "eval": {
+                                    "eval": "\"[$code$]\" == \"405\""
+                                }
+                            }
+                        }
+                    },
+                    "FunctionName": "if",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                }
+            ]
+        },
+        {
+            "Name": "MAIN",
+            "Steps": [
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "",
+                    "FunctionDefinition": {
+                        "__extension": "deploy.datastore",
+                        "__name": "get_deployment_value",
+                        "pairs": {
+                            "Item::pair::0": {
+                                "key": {
+                                    "key": "admpassword"
+                                },
+                                "variable_name": {
+                                    "variable_name": "admpassword"
+                                }
+                            },
+                            "Item::pair::1": {
+                                "key": {
+                                    "key": "region"
+                                },
+                                "variable_name": {
+                                    "variable_name": "region"
+                                }
+                            },
+                            "__is_array": "true"
+                        },
+                        "scope": {
+                            "scope": "Deployment"
+                        }
+                    },
+                    "FunctionName": "get_deployment_value",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "Connect to Windows Server using WinRM",
+                    "FunctionDefinition": {
+                        "__name": "new_connection",
+                        "asset": {
+                            "asset": "address=[$_HOST_ADDRESS$] userid=administrator password=[$admpassword$]"
+                        },
+                        "cloud_name": {
+                            "cloud_name": ""
+                        },
+                        "conn_name": {
+                            "conn_name": "CONN1"
+                        },
+                        "conn_type": {
+                            "conn_type": "winrm"
+                        },
+                        "debug": {
+                            "debug": ""
+                        },
+                        "initial_prompt": {
+                            "initial_prompt": ""
+                        }
+                    },
+                    "FunctionName": "new_connection",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "Install IIS, enable .NET",
+                    "FunctionDefinition": {
+                        "__name": "winrm_cmd",
+                        "__parse_method": "2",
+                        "command": {
+                            "command": "Start /w pkgmgr /iu:IIS-WebServerRole;IIS-WebServer;IIS-CommonHttpFeatures;IIS-StaticContent;IIS-DefaultDocument;IIS-DirectoryBrowsing;IIS-HttpErrors;IIS-ApplicationDevelopment;IIS-ASPNET;IIS-NetFxExtensibility;IIS-ISAPIExtensions;IIS-ISAPIFilter;IIS-HealthAndDiagnostics;IIS-HttpLogging;IIS-LoggingLibraries;IIS-RequestMonitor;IIS-Security;IIS-RequestFiltering;IIS-HttpCompressionStatic;IIS-WebServerManagementTools;IIS-ManagementConsole;WAS-WindowsActivationService;WAS-ProcessModel;WAS-NetFxEnvironment;WAS-ConfigurationAPI"
+                        },
+                        "conn_name": {
+                            "conn_name": "CONN1"
+                        },
+                        "result_variable": {
+                            "result_variable": ""
+                        },
+                        "return_code": {
+                            "return_code": ""
+                        },
+                        "timeout": {
+                            "timeout": ""
+                        }
+                    },
+                    "FunctionName": "winrm_cmd",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 2,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "Disconnect from Windows Server",
+                    "FunctionDefinition": {
+                        "__name": "drop_connection",
+                        "conn_name": {
+                            "conn_name": "CONN1"
+                        }
+                    },
+                    "FunctionName": "drop_connection",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                }
+            ]
+        }
+    ],
+    "ConcurrentInstances": null,
+    "Description": "Configures a Windows server using WinRM",
+    "IsDefaultVersion": true,
+    "MaxVersion": 1.0,
+    "Name": "Example EC2 Config Windows",
+    "NextMajorVersion": "2.000",
+    "NextMinorVersion": "1.001",
+    "NumberOfApprovedVersions": 0,
+    "Parameters": [],
+    "QueueDepth": null,
+    "Status": "Development",
+    "Version": 1.0
+}

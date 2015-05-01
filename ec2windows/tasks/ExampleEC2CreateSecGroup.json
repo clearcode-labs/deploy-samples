@@ -1,0 +1,249 @@
+{
+    "Code": "ex-032",
+    "Codeblocks": [
+        {
+            "Name": "MAIN",
+            "Steps": [
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "Get the AWS region",
+                    "FunctionDefinition": {
+                        "__extension": "deploy.datastore",
+                        "__name": "get_deployment_value",
+                        "pairs": {
+                            "Item::pair::0": {
+                                "key": {
+                                    "key": "region"
+                                },
+                                "variable_name": {
+                                    "variable_name": "region"
+                                }
+                            },
+                            "__is_array": "true"
+                        },
+                        "scope": {
+                            "scope": "Deployment"
+                        }
+                    },
+                    "FunctionName": "get_deployment_value",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "Generate random security group name",
+                    "FunctionDefinition": {
+                        "__name": "substring",
+                        "end": {
+                            "end": "8"
+                        },
+                        "source": {
+                            "source": "[$_UUID$]"
+                        },
+                        "start": {
+                            "start": "1"
+                        },
+                        "variable_name": {
+                            "variable_name": "sg"
+                        }
+                    },
+                    "FunctionName": "substring",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "Append the generated name to ccldemo",
+                    "FunctionDefinition": {
+                        "__name": "set_variable",
+                        "variables": {
+                            "Item::variable::0": {
+                                "modifier": {
+                                    "modifier": "DEFAULT"
+                                },
+                                "name": {
+                                    "name": "sg"
+                                },
+                                "value": {
+                                    "value": "ccldemo[$sg$]"
+                                }
+                            },
+                            "__is_array": "true"
+                        }
+                    },
+                    "FunctionName": "set_variable",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "Store the security group name for later use",
+                    "FunctionDefinition": {
+                        "__extension": "deploy.datastore",
+                        "__name": "set_deployment_value",
+                        "pairs": {
+                            "Item::pair::0": {
+                                "key": {
+                                    "key": "securitygroup"
+                                },
+                                "value": {
+                                    "value": "[$sg$]"
+                                }
+                            },
+                            "__is_array": "true"
+                        },
+                        "scope": {
+                            "scope": "Deployment"
+                        }
+                    },
+                    "FunctionName": "set_deployment_value",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "Create classic security group",
+                    "FunctionDefinition": {
+                        "GroupDescription": {
+                            "GroupDescription": "ClearCode demo group, delete"
+                        },
+                        "GroupName": {
+                            "GroupName": "[$sg$]"
+                        },
+                        "VpcId": {
+                            "VpcId": ""
+                        },
+                        "__name": "aws_ec2_CreateSecurityGroup",
+                        "aws_region": {
+                            "aws_region": "[$region$]"
+                        },
+                        "result_name": {
+                            "result_name": ""
+                        }
+                    },
+                    "FunctionName": "aws_ec2_CreateSecurityGroup",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "Open ports 80 and 5985",
+                    "FunctionDefinition": {
+                        "GroupId": {
+                            "GroupId": ""
+                        },
+                        "GroupName": {
+                            "GroupName": "[$sg$]"
+                        },
+                        "IpPermissions.n": {
+                            "Item::IpPermissions::0": {
+                                "FromPort": {
+                                    "FromPort": "80"
+                                },
+                                "Groups.m": {
+                                    "Item::Groups::0": {
+                                        "GroupId": {
+                                            "GroupId": ""
+                                        },
+                                        "GroupName": {
+                                            "GroupName": ""
+                                        },
+                                        "UserId": {
+                                            "UserId": ""
+                                        }
+                                    },
+                                    "__is_array": "true"
+                                },
+                                "IpProtocol": {
+                                    "IpProtocol": "tcp"
+                                },
+                                "IpRanges.m": {
+                                    "Item::IpRanges::0": {
+                                        "CidrIp": {
+                                            "CidrIp": "0.0.0.0/0"
+                                        }
+                                    },
+                                    "__is_array": "true"
+                                },
+                                "ToPort": {
+                                    "ToPort": "80"
+                                }
+                            },
+                            "Item::IpPermissions::1": {
+                                "FromPort": {
+                                    "FromPort": "5985"
+                                },
+                                "Groups.m": {
+                                    "Item::Groups::0": {
+                                        "GroupId": {
+                                            "GroupId": ""
+                                        },
+                                        "GroupName": {
+                                            "GroupName": ""
+                                        },
+                                        "UserId": {
+                                            "UserId": ""
+                                        }
+                                    },
+                                    "__is_array": "true"
+                                },
+                                "IpProtocol": {
+                                    "IpProtocol": "tcp"
+                                },
+                                "IpRanges.m": {
+                                    "Item::IpRanges::0": {
+                                        "CidrIp": {
+                                            "CidrIp": "0.0.0.0/0"
+                                        }
+                                    },
+                                    "__is_array": "true"
+                                },
+                                "ToPort": {
+                                    "ToPort": "5985"
+                                }
+                            },
+                            "__is_array": "true"
+                        },
+                        "UserId": {
+                            "UserId": ""
+                        },
+                        "__name": "aws_ec2_AuthorizeSecurityGroupIngress",
+                        "aws_region": {
+                            "aws_region": "[$region$]"
+                        },
+                        "result_name": {
+                            "result_name": ""
+                        }
+                    },
+                    "FunctionName": "aws_ec2_AuthorizeSecurityGroupIngress",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                }
+            ]
+        }
+    ],
+    "ConcurrentInstances": null,
+    "Description": "Creates a security group in EC2",
+    "IsDefaultVersion": true,
+    "MaxVersion": 1.0,
+    "Name": "Example EC2 Create Sec Group",
+    "NextMajorVersion": "2.000",
+    "NextMinorVersion": "1.001",
+    "NumberOfApprovedVersions": 0,
+    "Parameters": [],
+    "QueueDepth": null,
+    "Status": "Development",
+    "Version": 1.0
+}

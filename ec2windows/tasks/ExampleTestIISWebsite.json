@@ -1,0 +1,232 @@
+{
+    "Code": "ex-034",
+    "Codeblocks": [
+        {
+            "Name": "check_winrm_http",
+            "Steps": [
+                {
+                    "Codeblock": "check_winrm_http",
+                    "Commented": false,
+                    "Description": "Wait until WinRM comes up",
+                    "FunctionDefinition": {
+                        "__name": "http",
+                        "__parse_method": "2",
+                        "cookie_out": {
+                            "cookie_out": ""
+                        },
+                        "data": {
+                            "data": ""
+                        },
+                        "headers": {
+                            "Item::pair::0": {
+                                "key": {
+                                    "key": ""
+                                },
+                                "value": {
+                                    "value": ""
+                                }
+                            },
+                            "__is_array": "true"
+                        },
+                        "response_body": {
+                            "response_body": ""
+                        },
+                        "response_header": {
+                            "response_header": ""
+                        },
+                        "response_info": {
+                            "response_info": ""
+                        },
+                        "response_time_ms": {
+                            "response_time_ms": ""
+                        },
+                        "retries": {
+                            "retries": "20"
+                        },
+                        "status_code": {
+                            "status_code": "code"
+                        },
+                        "status_msg": {
+                            "status_msg": ""
+                        },
+                        "timeout": {
+                            "timeout": "30"
+                        },
+                        "type": {
+                            "type": "GET"
+                        },
+                        "url": {
+                            "url": "http://[$dnsname$]:5985/wsman"
+                        }
+                    },
+                    "FunctionName": "http",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 2,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "check_winrm_http",
+                    "Commented": false,
+                    "Description": "",
+                    "FunctionDefinition": {
+                        "__name": "if",
+                        "else": {
+                            "__input_type": "text",
+                            "function": {
+                                "__name": "sleep",
+                                "seconds": {
+                                    "seconds": "30"
+                                }
+                            }
+                        },
+                        "tests": {
+                            "test": {
+                                "action": {
+                                    "function": {
+                                        "__name": "break_loop",
+                                        "function": ""
+                                    }
+                                },
+                                "eval": {
+                                    "eval": "\"[$code$]\" == \"405\""
+                                }
+                            }
+                        }
+                    },
+                    "FunctionName": "if",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                }
+            ]
+        },
+        {
+            "Name": "MAIN",
+            "Steps": [
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "Just because WinRM listener is up doesn't mean it is ready, sleep for a bit",
+                    "FunctionDefinition": {
+                        "__name": "sleep",
+                        "seconds": {
+                            "seconds": "30"
+                        }
+                    },
+                    "FunctionName": "sleep",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "Test IIS endpoint",
+                    "FunctionDefinition": {
+                        "__name": "http",
+                        "__parse_method": "2",
+                        "cookie_out": {
+                            "cookie_out": ""
+                        },
+                        "data": {
+                            "data": ""
+                        },
+                        "headers": {
+                            "Item::pair::0": {
+                                "key": {
+                                    "key": ""
+                                },
+                                "value": {
+                                    "value": ""
+                                }
+                            },
+                            "__is_array": "true"
+                        },
+                        "response_body": {
+                            "response_body": "httpbody"
+                        },
+                        "response_header": {
+                            "response_header": ""
+                        },
+                        "response_info": {
+                            "response_info": ""
+                        },
+                        "response_time_ms": {
+                            "response_time_ms": ""
+                        },
+                        "retries": {
+                            "retries": "6"
+                        },
+                        "status_code": {
+                            "status_code": ""
+                        },
+                        "status_msg": {
+                            "status_msg": ""
+                        },
+                        "timeout": {
+                            "timeout": "10"
+                        },
+                        "type": {
+                            "type": "GET"
+                        },
+                        "url": {
+                            "url": "http://[$_HOST_ADDRESS$]"
+                        }
+                    },
+                    "FunctionName": "http",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 2,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "Test http body for a certain string",
+                    "FunctionDefinition": {
+                        "__name": "if",
+                        "else": {
+                            "__input_type": "text",
+                            "function": {
+                                "__name": "log_msg",
+                                "message": {
+                                    "message": "NO GOOD, ISS INSTALL FAILED!!!!!"
+                                }
+                            }
+                        },
+                        "tests": {
+                            "test": {
+                                "action": {
+                                    "function": {
+                                        "__name": "log_msg",
+                                        "message": {
+                                            "message": "ALL IS WELL, IIS UP AND RUNNING"
+                                        }
+                                    }
+                                },
+                                "eval": {
+                                    "eval": "\"IIS Windows Server\" in \"\"\"[$httpbody$]\"\"\""
+                                }
+                            }
+                        }
+                    },
+                    "FunctionName": "if",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                }
+            ]
+        }
+    ],
+    "ConcurrentInstances": null,
+    "Description": "Performs a simple test on an IIS endpoint",
+    "IsDefaultVersion": true,
+    "MaxVersion": 1.0,
+    "Name": "Example Test IIS Website",
+    "NextMajorVersion": "2.000",
+    "NextMinorVersion": "1.001",
+    "NumberOfApprovedVersions": 0,
+    "Parameters": [],
+    "QueueDepth": null,
+    "Status": "Development",
+    "Version": 1.0
+}

@@ -1,0 +1,122 @@
+{
+    "Data": {
+        "admpassword": "Qw3r5Pi@",
+        "region": "us-east-1"
+    },
+    "Options": {
+        "StartSequence": "Start",
+        "TerminateSequence": "Terminate"
+    },
+    "Sequences": [
+        {
+            "Description": "Starts an EC2 Instance",
+            "Icon": "46_48x48.png",
+            "Name": "Start",
+            "Options": {
+                "SetRunState": "running"
+            },
+            "Steps": [
+                {
+                    "Services": [
+                        {
+                            "Activity": "create",
+                            "CloudName": "us-east-1",
+                            "DesiredState": "running",
+                            "InitialState": "start",
+                            "Name": "SecurityGroup",
+                            "RunLevel": 2,
+                            "Task": "Example EC2 Create Sec Group"
+                        }
+                    ]
+                },
+                {
+                    "Services": [
+                        {
+                            "Activity": "create",
+                            "CloudName": "us-east-1",
+                            "DesiredState": "started",
+                            "InitialState": "start",
+                            "Name": "Windows",
+                            "RunLevel": 1,
+                            "Task": "Example EC2 Boot Windows"
+                        }
+                    ]
+                },
+                {
+                    "Services": [
+                        {
+                            "DesiredState": "running",
+                            "InitialState": "started",
+                            "Name": "Windows",
+                            "RunLevel": 2,
+                            "Task": "Example EC2 Config Windows"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Description": "Terminate all service instances",
+            "Icon": "45_48x48.png",
+            "Name": "Terminate",
+            "Options": {
+                "SetRunState": "stopped"
+            },
+            "Steps": [
+                {
+                    "Services": [
+                        {
+                            "Activity": "terminate",
+                            "DesiredState": "terminated",
+                            "InitialState": "stopping",
+                            "Name": "Windows",
+                            "RunLevel": 0,
+                            "Task": "Example EC2 Terminate Instance"
+                        }
+                    ]
+                },
+                {
+                    "Services": [
+                        {
+                            "Activity": "terminate",
+                            "DesiredState": "terminated",
+                            "InitialState": "stopping",
+                            "Name": "SecurityGroup",
+                            "RunLevel": 0,
+                            "Task": "Example EC2 Remove Sec Group"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Description": "Simulates a Testing Process",
+            "Icon": "46_48x48.png",
+            "Name": "Tests",
+            "Steps": [
+                {
+                    "Services": [
+                        {
+                            "Name": "Windows",
+                            "Task": "Example Test IIS Website"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "Services": [
+        {
+            "Description": "EC2 Security Group",
+            "Name": "SecurityGroup"
+        },
+        {
+            "Data": {
+                "image": "ami-cc93a8a4",
+                "type": "m3.medium"
+            },
+            "Description": "Windows 2012",
+            "Name": "Windows"
+        }
+    ]
+}

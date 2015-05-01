@@ -1,0 +1,73 @@
+{
+    "Code": "ex-033",
+    "Codeblocks": [
+        {
+            "Name": "MAIN",
+            "Steps": [
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "",
+                    "FunctionDefinition": {
+                        "__extension": "deploy.datastore",
+                        "__name": "get_deployment_value",
+                        "pairs": {
+                            "Item::pair::0": {
+                                "key": {
+                                    "key": "securitygroup"
+                                },
+                                "variable_name": {
+                                    "variable_name": "sg"
+                                }
+                            },
+                            "__is_array": "true"
+                        },
+                        "scope": {
+                            "scope": "Deployment"
+                        }
+                    },
+                    "FunctionName": "get_deployment_value",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "Remove the security group we created",
+                    "FunctionDefinition": {
+                        "GroupId": {
+                            "GroupId": ""
+                        },
+                        "GroupName": {
+                            "GroupName": "[$sg$]"
+                        },
+                        "__name": "aws_ec2_DeleteSecurityGroup",
+                        "aws_region": {
+                            "aws_region": "[$region$]"
+                        },
+                        "result_name": {
+                            "result_name": ""
+                        }
+                    },
+                    "FunctionName": "aws_ec2_DeleteSecurityGroup",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                }
+            ]
+        }
+    ],
+    "ConcurrentInstances": null,
+    "Description": "Removes a security group from EC2",
+    "IsDefaultVersion": true,
+    "MaxVersion": 1.0,
+    "Name": "Example EC2 Remove Sec Group",
+    "NextMajorVersion": "2.000",
+    "NextMinorVersion": "1.001",
+    "NumberOfApprovedVersions": 0,
+    "Parameters": [],
+    "QueueDepth": null,
+    "Status": "Development",
+    "Version": 1.0
+}

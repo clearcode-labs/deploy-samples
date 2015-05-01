@@ -1,0 +1,88 @@
+{
+    "Code": "ex-035",
+    "Codeblocks": [
+        {
+            "Name": "MAIN",
+            "Steps": [
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "Get the region from the deployment",
+                    "FunctionDefinition": {
+                        "__extension": "deploy.datastore",
+                        "__name": "get_deployment_value",
+                        "pairs": {
+                            "Item::pair::0": {
+                                "key": {
+                                    "key": "region"
+                                },
+                                "variable_name": {
+                                    "variable_name": "region"
+                                }
+                            },
+                            "__is_array": "true"
+                        },
+                        "scope": {
+                            "scope": "Deployment"
+                        }
+                    },
+                    "FunctionName": "get_deployment_value",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "Terminate the EC2 instance",
+                    "FunctionDefinition": {
+                        "InstanceId.n": {
+                            "Item::InstanceId::0": {
+                                "InstanceId": "[$_HOST$]"
+                            },
+                            "__is_array": "true"
+                        },
+                        "__name": "aws_ec2_TerminateInstances",
+                        "aws_region": {
+                            "aws_region": "[$region$]"
+                        },
+                        "result_name": {
+                            "result_name": ""
+                        }
+                    },
+                    "FunctionName": "aws_ec2_TerminateInstances",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                },
+                {
+                    "Codeblock": "MAIN",
+                    "Commented": false,
+                    "Description": "Sleep 60 seconds before moving on",
+                    "FunctionDefinition": {
+                        "__name": "sleep",
+                        "seconds": {
+                            "seconds": "60"
+                        }
+                    },
+                    "FunctionName": "sleep",
+                    "OutputColumnDelimiter": 0,
+                    "OutputParseType": 0,
+                    "OutputRowDelimiter": 0
+                }
+            ]
+        }
+    ],
+    "ConcurrentInstances": null,
+    "Description": "Terminates an EC2 Instance",
+    "IsDefaultVersion": true,
+    "MaxVersion": 1.0,
+    "Name": "Example EC2 Terminate Instance",
+    "NextMajorVersion": "2.000",
+    "NextMinorVersion": "1.001",
+    "NumberOfApprovedVersions": 0,
+    "Parameters": [],
+    "QueueDepth": null,
+    "Status": "Development",
+    "Version": 1.0
+}
