@@ -23,7 +23,9 @@ This tutorial assumes that you are familiar with Amazon AWS EC2, have an account
 
 > NOTE: In this tutorial we will use EC2 Classic Security Groups for simplicity's sake (not VPC)
 
-You may want to go through the walk through for the standalone Automate Task sample below. This Deploy sample is based on that task and has all the same prerequisites and more indepth explanations of the task steps.
+You may want to go through the walk through for the standalone Automate Task sample linked below. This Deploy sample is based on that task and has all the same prerequisites and more indepth explanations of the task steps.
+
+https://github.com/clearcode-labs/automate-samples/tree/master/ec2winrm
 
 Setup Cloud Credentials
 -----------------------
